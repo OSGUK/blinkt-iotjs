@@ -1,0 +1,23 @@
+{
+  "name": "blinkt_iotjs",
+  "version": "1.0.0",
+  "description": "A IoT.js Library to Interact With the Raspberry Pi Blinkt LED Hat",
+  "main": "Blinkt.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OSGUK/blinkt-iotjs.git"
+  },
+  "keywords": [
+    "IoT.js",
+    "Blinkt!"
+  ],
+  "author": "Ziran Sun",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OSGUK/blinkt-iotjs/issues"
+  },
+  "homepage": "https://github.com/OSGUK/blinkt-iotjs#readme"
+}
