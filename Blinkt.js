@@ -1,5 +1,5 @@
 /* This work is based on node-blinkt module (https://github.com/irrelon/node-blinkt).
- * Modifications and additions have been made to adapt to IoT.js platform by Samsung. 
+ * Modifications and additions have been made to adapt to IoT.js platform by Samsung.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,15 +15,14 @@
 
 "use strict";
 
-var Gpio = require('gpio'),
-    gpio = new Gpio(),
-    DAT = 23,
-    CLK = 24,
-    Blinkt;
+var bitmask = require('platform').bitmask;
+var Wpi = require('wpi_iot'),
+    wpi = new Wpi();
+var DAT = 23,
+	  CLK = 24,
+	  Blinkt;
 
-var gpio_dat; // A reference (handle) to gpio data pin
-var gpio_clk; // A reference (handle) to gpioclock pin
-
+//var bitmask = require('platform/iotjs/platform').bitmask;
 Blinkt = function () {};
 
 /**
@@ -33,23 +32,8 @@ Blinkt = function () {};
  */
 Blinkt.prototype.setup = function setup () {
 	// Set pin mode to output
-	gpio_dat = gpio.open({
-		pin: DAT,
-		direction: gpio.DIRECTION.OUT
-	}, function(err) {
-		if (err) {
-			console.error(err);
-		}
-	});
-
-	gpio_clk = gpio.open({
-		pin: CLK,
-		direction: gpio.DIRECTION.OUT
-	}, function(err) {
-		if (err) {
-			console.error(err);
-		}
-	});
+	wpi.pinMode(DAT, wpi.OUTPUT);
+	wpi.pinMode(CLK, wpi.OUTPUT);
 
 	this._numPixels = 8;
 	this._pixels = [];
@@ -92,7 +76,7 @@ Blinkt.prototype.setPixel = function setPixel (pixelNum, r, g, b, a) {
 			a = this._pixels[pixelNum][3] !== undefined ? this._pixels[pixelNum][3] : 1.0;
 		}
 	} else {
-		a = parseInt((31.0 * a), 10) & 0x1F;
+		a = parseInt((31.0 * a), 10) & bitmask.brightness;
 	}
 
 	this._pixels[pixelNum] = [
@@ -112,7 +96,7 @@ Blinkt.prototype.setPixel = function setPixel (pixelNum, r, g, b, a) {
  * and 1.0.
  */
 Blinkt.prototype.setBrightness = function setBrightness (pixelNum, brightness) {
-	this._pixels[pixelNum][3] = parseInt((31.0 * brightness), 10) & 0x1F;
+	this._pixels[pixelNum][3] = parseInt((31.0 * brightness), 10) & bitmask.brightness;
 };
 
 /**
@@ -141,7 +125,7 @@ Blinkt.prototype.sendUpdate = function sendUpdate () {
 		pixel = this._pixels[i];
 
 		// Brightness
-		this._writeByte(0xE0 | pixel[3]); // jshint ignore:line
+		this._writeByte(bitmask.significantbits | pixel[3]); // jshint ignore:line
 		// Blue
 		this._writeByte(pixel[2]);
 		// Green
@@ -162,12 +146,12 @@ Blinkt.prototype._writeByte = function writeByte (byte) {
 	var bit;
 
 	for (var i = 0 ; i < this._numPixels; i++) {
-		bit = ((byte & (1 << (7 - i))) > 0) === true ? 1 : 0; // jshint ignore:line
+		bit = ((byte & (1 << (7 - i))) > 0) === true ? wpi.HIGH : wpi.LOW; // jshint ignore:line
 
-        gpio_dat.write(bit); // physically set your pin high/low
-        gpio_clk.write(true); // set your clock high to load your data
-        gpio_clk.write(false); // set your clock low to consume your data
-    }
+		wpi.digitalWrite(DAT, bit);
+		wpi.digitalWrite(CLK, 1);
+		wpi.digitalWrite(CLK, 0);
+	}
 };
 
 /**
@@ -175,11 +159,11 @@ Blinkt.prototype._writeByte = function writeByte (byte) {
  * @private
  */
 Blinkt.prototype._latch = function latch() {
-    gpio_dat.write(false);
-    for (var i = 0; i < 36; i++) {
-        gpio_clk.write(true);
-        gpio_clk.write(false);
-    }
+	wpi.digitalWrite(DAT, 0);
+	for (var i = 0 ; i < 36; i++) {
+		wpi.digitalWrite(CLK, 1);
+		wpi.digitalWrite(CLK, 0);
+	}
 };
 
 module.exports = Blinkt;

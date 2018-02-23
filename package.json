@@ -1,25 +1,23 @@
 {
-  "name": "node-blinkt",
-  "author": "Rob Evans - Irrelon Software Limited",
-  "description": "A Node.js Library to Interact With the Raspberry Pi Blinkt! LED Hat.",
-  "version": "1.0.2",
-  "keywords": [
-    "blinkt",
-    "irrelon"
-  ],
-  "private": false,
-  "dependencies": {
-    "wiringpi-node": "2.4.4"
-  },
-  "engines": {
-    "node": "*"
+  "name": "blinkt_iotjs",
+  "version": "1.0.0",
+  "description": "A IoT.js Library to Interact With the Raspberry Pi Blinkt LED Hat",
+  "main": "Blinkt.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/irrelon/node-blinkt.git"
+    "url": "git+https://github.com/OSGUK/blinkt-iotjs.git"
   },
-  "main": "./Blinkt",
+  "keywords": [
+    "IoT.js",
+    "Blinkt!"
+  ],
+  "author": "Ziran Sun",
+  "license": "ISC",
   "bugs": {
-    "url": "http://github.com/irrelon/node-blinkt/issues"
-  }
+    "url": "https://github.com/OSGUK/blinkt-iotjs/issues"
+  },
+  "homepage": "https://github.com/OSGUK/blinkt-iotjs#readme"
 }
